@@ -1,0 +1,197 @@
+{
+	"info": {
+		"_postman_id": "685bf98b-2b95-4c7a-9a8b-52bf7c32076e",
+		"name": "NewsAggregatorApi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "user_registration",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"dinesharjunan\",\r\n    \"email\": \"adineskumar@gmail.com\",\r\n    \"password\": \"DScp@2023\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://192.168.0.101:3000/register",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"0",
+						"101"
+					],
+					"port": "3000",
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user_login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"adineskumar@gmail.com\",\r\n    \"password\": \"DScp@2023\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://192.168.0.101:3000/login",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"0",
+						"101"
+					],
+					"port": "3000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_user_preferences",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkaW5lc2t1bWFyQGdtYWlsLmNvbSIsImlhdCI6MTY4OTE3MzgzOCwiZXhwIjoxNjg5MjYwMjM4fQ.w-79QQfkj7qZCQVdRmckWitv-_IUab5_YDyEcw94qqM",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://192.168.0.101:3000/preferences",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"0",
+						"101"
+					],
+					"port": "3000",
+					"path": [
+						"preferences"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update_user_preferences",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkaW5lc2t1bWFyQGdtYWlsLmNvbSIsImlhdCI6MTY4OTE3MzgzOCwiZXhwIjoxNjg5MjYwMjM4fQ.w-79QQfkj7qZCQVdRmckWitv-_IUab5_YDyEcw94qqM",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"preferences\": {\r\n        \"categories\": [ \"general\" ],\r\n        \"sources\": [ \"engadget\" ] \r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://192.168.0.101:3000/preferences",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"0",
+						"101"
+					],
+					"port": "3000",
+					"path": [
+						"preferences"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_news",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkaW5lc2t1bWFyQGdtYWlsLmNvbSIsImlhdCI6MTY4OTE3MzgzOCwiZXhwIjoxNjg5MjYwMjM4fQ.w-79QQfkj7qZCQVdRmckWitv-_IUab5_YDyEcw94qqM",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://192.168.0.101:3000/news/",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"0",
+						"101"
+					],
+					"port": "3000",
+					"path": [
+						"news",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_top_news",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkaW5lc2t1bWFyQGdtYWlsLmNvbSIsImlhdCI6MTY4OTE3MzgzOCwiZXhwIjoxNjg5MjYwMjM4fQ.w-79QQfkj7qZCQVdRmckWitv-_IUab5_YDyEcw94qqM",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://192.168.0.101:3000/news/top",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"0",
+						"101"
+					],
+					"port": "3000",
+					"path": [
+						"news",
+						"top"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
