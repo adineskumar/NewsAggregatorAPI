@@ -4,7 +4,7 @@
   "description": "API that helps to extract news from external API",
   "main": "src/app.js",
   "scripts": {
-    "dev": "node --watch --no-warnings src/app.js",
+    "dev": "nodemon src/app.js",
     "test": "mocha --recursive src/test/**/*.js --timeout 10000 --exit"
   },
   "author": "dinesh.arjunan@delta.com",

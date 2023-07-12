@@ -1,51 +1,60 @@
 **Welcome to News Aggregator API.**
 
 **Project Structure:**
+```
 
-src/ 
-  ├── app.js   
-  ├── config   
-  │ └── env.js   
-  ├── constants   
-  │ ├── app.constants.js   
-  │ └── schema.constants.js     
-  ├── controllers   
-  │ ├── auth.controller.js   
-  │ ├── news.controller.js   
-  │ └── preferences.controller.js   
-  ├── middlewares   
-  │ └── auth.middleware.js   
-  ├── readme.md   
-  ├── routers   
-  │ ├── authRouter.js   
-  │ ├── newsRouter.js   
-  │ └── preferenceRouter.js   
-  └── schemas   
-  ├── preferences.schema.js   
-  └── users.schema.js  
+└───src  
+    ├───clients   
+    ├───config    
+    ├───constants    
+    ├───controllers  
+    ├───log    
+    ├───middlewares  
+    ├───models    
+    ├───routers      
+    ├───routes    
+    ├───schemas      
+    └───test      
+        └───routes
+```
 
 **Endpoints:**
 
-1. POST /register     Register a new user.
-   Sample Request Body: { "username" : "xxxxxx", "password" : "pppppppp", "preferences": { "sources": ["google-news-in", "google-news-us"], "category": ["business", "science"] } }
-   Sample Response: { "message": "User registered successfully" }
+1. POST /register       -  Registers an user
+2. POST /login          -  Logins using the user details
+3. GET /preferences     -  List the logged in user preferences
+4. PUT /preferences     -  Updates the logged in user preferences
+5. GET /news            -  Retrieves the news based on the logged in user preferences
+6. GET /news/top        -  Retrieves the top-news based on the logged in user preferences
 
-2. POST /login         Log in a user.
-   Sample Request Body: { "username" : "xxxxxx", "password" : "pppppppp", "preferences": { "sources": ["google-news-in", "google-news-us"], "category": ["business", "science"] } }
-   Sample Response: { "message": "Login successful", "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ld3VzZXIiLCJpYXQiOjE2ODg2NDI5NzAsImV4cCI6MTY4ODcyOTM3MH0.fPIet0KjT-9QxObPcSAtOUphHWUhpBQT9Myq5cBRKEA" }
+**User Schema:**
+   ```
+{
+      "username": "test-user",
+      "email": "test-user@gmail.com",
+      "password": "XXxx@1234",
+      "preferences": {
+         "categories": [ "general" ],
+         "sources": [ "engadget" ] 
+      }
+   }
+```
 
-3. GET /preferences     Retrieve the news preferences for the logged-in user.
-   Sample Request Body: curl --location --request GET 'https://newaggregaterapi.dineshkumar318.repl.co/preferences'
---header 'Authorization: JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImdhbmVzaCIsImlhdCI6MTY4ODY0MTE5NCwiZXhwIjoxNjg4NzI3NTk0fQ.WL_X7XEzLSGtqSpa6XFA7u_vXPDoU6lPR6RVDkcviSs'
-  Sample Response: { "category": [ "business", "science" ], "sources": [ "google-news-in", "google-news-us" ] }
+**Note:**
+1. Preferences is not mandatory at the time of registration.
+2. User can change his preferences later after his registration is complete.
+3. News articles were pulled from an external API using async/await
+4. Retrieved news articles were stored in REDIS cache, to reduce calling to external API
+5. Local caching is also made available with the help of node-cache package.
+6. Rolling log file have been made available to this application
+7. Quite few unit test cases have also been added to this application
 
-4. PUT /preferences     Update the news preferences for the logged-in user.
-   Sample Request Body: { "username" : "xxxxxxx", "password" : "pppppp", "preferences": { "sources": ["google-news-in", "google-news-us"], "category": ["business", "science", "sports"] } }
-   Sample Response: { "message" : "News preferences updated" }
+**Unit Test:**
+```
+npm run test 
+``` 
 
-5. GET /news            Fetch news articles based on the logged-in user's preferences
-
-**Room for improvement:** 
-  1. Code refractoring
-  2. Organizing Status Code and Response Messages as constants
-  3. Implement async/await wherever possible
+**Starting the application:**
+```
+npm run dev
+```
