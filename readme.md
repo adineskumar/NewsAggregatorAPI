@@ -40,6 +40,9 @@
    }
 ```
 
+**PostMan Collection:**
+[NewsAggregatorAPI](NewsAggregatorApi.postman_collection.json)
+
 **Note:**
 1. Preferences is not mandatory at the time of registration.
 2. User can change his preferences later after his registration is complete.
