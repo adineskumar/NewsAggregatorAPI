@@ -1,81 +1,89 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const User = require('../../src/schemas/users.schema.js');
-const { validateToken } = require('../../src/middlewares/auth.middleware.js');
-
-const preference_json_schema = require('../../src/schemas/preferences.schema.js');
-
+const { User } = require("../models/user.model");
 const {
-  STATUS_ERROR,
-  STATUS_SUCCESS,
-  ERR_USER_EXISTS,
-  ERR_USER_NOT_FOUND,
-  ERR_INVALID_PASSWORD,
-  ERR_VALIDATION,
-  ERR_SERVER_ERROR,
-  ERR_TOKEN_VERIFICATION,
-  ERR_MISSING_AUTH_HEADER,
-  ERR_SERVER_START,
-  ERR_REQUEST_LIMIT_EXCEEDED,
-  MSG_SUCCESSFUL_REGISTRATION,
-  MSG_SUCCESSFUL_LOGIN,
-  MSG_PREFERENCES_UPDATED,
-  MSG_SERVER_RUNNING,
-} = require('../../src/constants/app.constants.js');
-const { JWT_SECRET } = require('../../src/config/env.js');
+    USER_REGISTERED,
+    USER_REGISTRATION_FAILED,
+    USER_ALREADY_EXISTS,
+    USER_DOES_NOT_EXISTS,
+    MSG_USER_LOGIN_FAILUE,
+    MSG_USER_SUCCESSFUL_LOGIN,
+    INVALID_USER_PASSWORD,
+    INVALID_EMAIL,
+    MISSING_USER_DETAILS,
+    USER_VALIDATION_FAILED
+} = require("../constants/app.constants");
+const bodyParser = require("body-parser");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+require("dotenv").config({ path: 'src/.env' });
+JWT_SECRET=process.env.JWT_SECRET;
 
-function generateAccessToken(username) {
-  return jwt.sign({ username }, JWT_SECRET, { expiresIn: 86400 });
+function generateAccessToken(email) {
+    return jwt.sign({ email }, JWT_SECRET, { expiresIn: 86400 });
 }
 
 
 function hashPassword(plaintextPassword) {
-  const hash = bcrypt.hashSync(plaintextPassword, 10);
-  return hash;
+    const hash = bcrypt.hashSync(plaintextPassword, 10);
+    return hash;
 }
 
 function comparePassword(plaintextPassword, hash) {
-  const result = bcrypt.compareSync(plaintextPassword, hash);
-  return result;
+    const result = bcrypt.compareSync(plaintextPassword, hash);
+    return result;
+}
+
+const login = function (request, response) {
+    User.findOne(
+        {
+            "email": request.body.email
+        }
+    ).then((user) => {
+        if (!user) {
+            return response.status(404).json({ error: USER_DOES_NOT_EXISTS });
+        };
+        const validPassword = comparePassword(request.body.password, user.password);
+        if (!validPassword) {
+            return response.status(401).json({ error: INVALID_USER_PASSWORD });
+        };
+        const accessToken = generateAccessToken(request.body.email);
+        return response.status(200).json({ message: MSG_USER_SUCCESSFUL_LOGIN, accessToken });
+    }).catch((error) => {
+        return response.status(404).json({ error: MSG_USER_LOGIN_FAILUE });
+    });
+}
+
+const register = function (request, response) {    
+    const newUser = new User({
+        username: request.body.username,
+        email: request.body.email,
+        password: hashPassword(request.body.password),
+        preferences: request.body.preferences,
+        updated_at: Date.now()
+    });
+    errors = newUser.validateSync();
+    if (errors) {
+        return response.status(401).json({ error: USER_VALIDATION_FAILED });
+    };
+
+    User.findOne(
+        {
+            "email": request.body.email
+        }
+    ).then((user) => {
+        if (!user) {            
+            newUser.save().then((doc) => {
+                return response.status(200).json({ message: USER_REGISTERED });
+            }).catch((error) => {
+                return response.status(401).json({ error: USER_REGISTRATION_FAILED });
+            });
+        } else {
+            return response.status(400).json({ error: USER_ALREADY_EXISTS });
+        };
+    }).catch((error) => {
+        console.log(error);
+        return response.status(400).json({ error });
+    });
 }
 
 
-const register = function(request, response) {
-  var newUser = new User({
-    "username": request.body.username,
-    "password": hashPassword(request.body.password),
-    "preferences": request.body.preferences
-  });
-
-
-  User.findOne({ "username": newUser.username }).then(user => {
-    if (!user) {
-      newUser.save();
-      return response.status(200).json({ message: MSG_SUCCESSFUL_REGISTRATION });
-    } else {
-      return response.status(400).json({ message: ERR_USER_EXISTS });
-    }
-  }).catch(error => {
-    return response.status(400).json({ message: ERR_VALIDATION });
-  });
-}
-
-const login = function(request, response) {
-  User.findOne({ "username": request.body.username }).then(user => {
-    if (!user) {
-      return response.status(404).json({ message: ERR_USER_NOT_FOUND });
-    }
-    const validPassword = comparePassword(request.body.password, user.password);
-    if (!validPassword) {
-      return response.status(401).json({ message: ERR_INVALID_PASSWORD });
-    }
-    const accessToken = generateAccessToken(request.body.username);
-    return response.status(200).json({ message: MSG_SUCCESSFUL_LOGIN, accessToken });
-  }).catch(error => {
-    return response.status(200).json({ message: ERR_VALIDATION });
-  });
-}
-
-module.exports = { register, login };
+module.exports = { register, login, generateAccessToken, comparePassword, hashPassword };
